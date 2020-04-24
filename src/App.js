@@ -11,26 +11,25 @@ import './App.css';
 
 //console.log([getSnapshot(john), getSnapshot(eat)])
 
-const PrintJS = ({todos}) => {
+const PrintJS = observer (({todos}) => {
   
   return (
     <div>
       {todos.map((todo, index)=>
-        <p key={index}>
-          {todo.name}
-          <input
-            type="checkbox"
-            checked={todo.done}
-            onChange={e => todo.toggle()}
-          />
-        </p>
+          <p key={index}>
+            {todo.name}
+            <input
+              type="checkbox"
+              checked={todo.done}
+              onChange={e => {
+                todo.toggle()
+              }}
+            />
+          </p>
       )} 
     </div>
   )
-}
-  
-
-  
+})
 
 
 const App = (props) => (
@@ -42,13 +41,14 @@ const App = (props) => (
         const id = Object.keys(snap.todos).length + 1
         props.superStore.addTodo({id, name})
         e.target.title.value = ""
+        console.log( getSnapshot(props.superStore))
       }}>
       <label>Nombre del Todo</label>
       <br/>
       <input 
         type="text"
         name="title"
-        autoComplete="false"
+        autoComplete="off"
       />
       <br/>
       <button>Guardar</button>
@@ -56,26 +56,5 @@ const App = (props) => (
     <PrintJS todos={values(props.superStore.todos)} />
   </div>
 )
-// {
-//   input = React.createRef();
-
-//   submit = (event) => {
-//     const name = this.input.current.value
-//     const snap = getSnapshot(this.props.superStore)
-//     const id = Object.keys(snap.todos).length + 1
-    
-    
-//     this.input.current.value = ""
-
-//     console.log(getSnapshot(this.props.superStore))
-//     event.preventDefault();
-//   }
-
-//   render () { 
-//     const snap = getSnapshot(this.props.superStore)
-//     return 
-//   }
-// }
-
 
 export default observer(App);

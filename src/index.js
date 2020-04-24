@@ -7,7 +7,28 @@ import { getSnapshot, applySnapshot, onSnapshot } from "mobx-state-tree"
 import { RootStore } from './Models'
 
 const store = RootStore.create();
-const superStore = RootStore.create();
+const superStore = RootStore.create({
+  users: {
+    "1": {
+        id: "1",
+        name: "mweststrate"
+    },
+    "2": {
+        id: "2",
+        name: "mattiamanzati"
+    },
+    "3": {
+        id: "3",
+        name: "johndoe"
+    }
+  },
+  todos: {
+      "1": {
+          name: "Eat a cake",
+          done: true
+      }
+  }
+});
 
 store.addTodo({id: 1, name: 'aprender Moxb'})
 

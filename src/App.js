@@ -11,12 +11,23 @@ import './App.css';
 
 //console.log([getSnapshot(john), getSnapshot(eat)])
 
-const PrintJS = observer (({todos}) => {
-  
+
+const UserPickerView = observer(({superStore, user, onChange}) => (
+  <select value={user ? user.id : ""} onChange={e => onChange(e.target.value)}>
+      <option value="">-none-</option>
+      {values(superStore.users).map(user => (
+          <option value={user.id} key={user.id}>{user.name}</option>
+      ))}
+  </select>
+))
+
+const PrintJS = observer (({superStore}) => {
+
   return (
     <div>
-      {todos.map((todo, index)=>
-          <p key={index}>
+      {values(superStore.todos).map((todo, index)=>{
+          console.log(values(todo),index)
+          return (<p key={index}>
             {todo.name}
             <input
               type="checkbox"
@@ -25,12 +36,22 @@ const PrintJS = observer (({todos}) => {
                 todo.toggle()
               }}
             />
-          </p>
+            <UserPickerView
+              user={todo.user}
+              superStore={superStore}
+              onChange={userId => todo.setUser(userId)}
+            />
+          </p>)}
       )} 
     </div>
   )
 })
 
+const TodoCounterView = observer(({superStore}) => (
+  <p>
+      pendientes  {superStore.pendingCount} - {superStore.completedCount} completos
+  </p>
+))
 
 const App = (props) => (
   <div className="App">
@@ -53,7 +74,8 @@ const App = (props) => (
       <br/>
       <button>Guardar</button>
     </form>
-    <PrintJS todos={values(props.superStore.todos)} />
+    <TodoCounterView superStore = {props.superStore} />
+    <PrintJS superStore={props.superStore} />
   </div>
 )
 

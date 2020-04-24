@@ -11,56 +11,71 @@ import './App.css';
 
 //console.log([getSnapshot(john), getSnapshot(eat)])
 
-const PrintJS = observer((item, snap) => {
-    
-    return (
-      <div>
-        <p>{JSON.stringify(item)}</p>
-        <p>{JSON.stringify(snap.todos)}</p>
-      </div>
-    )
-  }
-)
-
-class  App extends Component {
-  input = React.createRef();
-
-  submit = (event) => {
-    const name = this.input.current.value
-    const snap = getSnapshot(this.props.superStore)
-    const id = Object.keys(snap.todos).length + 1
-    
-    this.props.superStore.addTodo({id, name})
-    this.input.current.value = ""
-
-    console.log(getSnapshot(this.props.superStore))
-    event.preventDefault();
-  }
-
-  render () { 
-    const snap = getSnapshot(this.props.superStore)
-    return (
-      <div className="App">
-        <form  onSubmit={this.submit}>
-          <label>Nombre del Todo</label>
-          <br/>
-          <input 
-            type="text"
-            name="title"
-            ref={this.input}
+const PrintJS = ({todos}) => {
+  
+  return (
+    <div>
+      {todos.map((todo, index)=>
+        <p key={index}>
+          {todo.name}
+          <input
+            type="checkbox"
+            checked={todo.done}
+            onChange={e => todo.toggle()}
           />
-          <br/>
-          <button>Guardar</button>
-        </form>
-        <div>
-          <button onClick={this.previousState}>Anterior</button>
-          <button onClick={this.nextState} >siguiente</button>
-        </div>
-        <PrintJS item={this.props.superStore} snap={snap}/>
-      </div>
-    );
-  }
+        </p>
+      )} 
+    </div>
+  )
 }
+  
+
+  
 
 
-export default App;
+const App = (props) => (
+  <div className="App">
+    <form  onSubmit={(e) => {
+        e.preventDefault(); 
+        const name = e.target.title.value;
+        const snap = getSnapshot(props.superStore)
+        const id = Object.keys(snap.todos).length + 1
+        props.superStore.addTodo({id, name})
+        e.target.title.value = ""
+      }}>
+      <label>Nombre del Todo</label>
+      <br/>
+      <input 
+        type="text"
+        name="title"
+        autoComplete="false"
+      />
+      <br/>
+      <button>Guardar</button>
+    </form>
+    <PrintJS todos={values(props.superStore.todos)} />
+  </div>
+)
+// {
+//   input = React.createRef();
+
+//   submit = (event) => {
+//     const name = this.input.current.value
+//     const snap = getSnapshot(this.props.superStore)
+//     const id = Object.keys(snap.todos).length + 1
+    
+    
+//     this.input.current.value = ""
+
+//     console.log(getSnapshot(this.props.superStore))
+//     event.preventDefault();
+//   }
+
+//   render () { 
+//     const snap = getSnapshot(this.props.superStore)
+//     return 
+//   }
+// }
+
+
+export default observer(App);
